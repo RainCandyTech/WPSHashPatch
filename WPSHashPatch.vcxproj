@@ -22,7 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{3ea996b7-9fb5-4de0-a184-dc7c84d04af0}</ProjectGuid>
-    <RootNamespace>PatchKRT</RootNamespace>
+    <RootNamespace>WPSHashPatch</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -151,7 +151,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="PatchKRT.c" />
+    <ClCompile Include="WPSHashPatch.c" />
+    <ClCompile Include="PatternUtil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PatternUtil.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
