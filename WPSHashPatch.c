@@ -19,22 +19,28 @@ BOOL ReplaceBytes(PBYTE data, DWORD size) {
     PBYTE position = NULL;
     PBYTE matches[2];
 
-    // 检查是否已经打了补丁，以替换字节及其末尾的 0xFF 标识
-    if (FindPattern(data, size, replacement, sizeof(replacement), &position)) {
-        return FALSE;
-    }
-
-    // 以特征码模糊查找目标地址
+    // 以特征码模糊查找目标地址（仅锚点定位）
     if (FindAOBPattern(data, size, 0, 1, anchorPattern, anchorMask, sizeof(anchorPattern), matches, 2) != 1) {
         return FALSE;
     }
 
-    // 从目标地址向前寻找函数起始地址
-    if (!FindPatternReverse(data, (SIZE_T) matches[0], replacementPattern, sizeof(replacementPattern), &position)) {
+    // 从锚点向前逆向搜索原始函数起始字节（限制在 1024 字节内）
+    if (!FindPatternReverse(data, (SIZE_T)matches[0], replacementPattern, sizeof(replacementPattern), &position)) {
         return FALSE;
     }
 
-    // 替换
+    // 检查搜索到的位置是否在锚点前 1024 字节内
+    if (matches[0] - position > 1024) {
+        return FALSE;
+    }
+
+    // 检查是否已打补丁（比较当前位置是否为 replacement 内容）
+    if (memcmp(position, replacement, sizeof(replacement)) == 0) {
+        // 已打补丁，视为成功
+        return TRUE;
+    }
+
+    // 执行替换
     memcpy(position, replacement, sizeof(replacement));
     return TRUE;
 }
